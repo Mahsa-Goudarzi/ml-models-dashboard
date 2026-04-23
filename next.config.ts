@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  turbopack: {},
   webpack: (config) => {
     // added because TensorFlow.js needs these modules
     config.resolve.fallback = {
