@@ -71,7 +71,9 @@ export default function DropZone() {
 
       if (file.size > maxFileSize) {
         const currentFileSize = (file.size / (1024 * 1024)).toFixed(2);
-        setError(`File is ${currentFileSize}MB. Max allowed file size is 5MB.`);
+        setError(
+          `File is ${currentFileSize}MB. Max allowed file size is ${(maxFileSize / (1024 * 1024)).toFixed(0)}MB.`,
+        );
         setLoading(false);
         return;
       }
