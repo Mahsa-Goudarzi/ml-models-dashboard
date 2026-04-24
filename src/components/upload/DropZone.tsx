@@ -26,21 +26,21 @@ const SAMPLE_DATASETS = [
     name: "Iris",
     meta: "150 rows · 5 cols",
     tag: "classification",
-    file: "iris",
+    file: "Iris",
     tagClass: "text-[var(--purple-primary)] bg-[var(--purple-secondary)]",
   },
   {
     name: "Titanic",
     meta: "891 rows · 12 cols",
     tag: "binary",
-    file: "titanic",
+    file: "Titanic",
     tagClass: "text-[var(--green-primary)] bg-[var(--green-secondary)]",
   },
   {
     name: "House Prices",
     meta: "1460 rows · 79 cols",
     tag: "regression",
-    file: "houses",
+    file: "Housing",
     tagClass: "text-[var(--blue-primary)] bg-[var(--blue-secondary)]",
   },
 ];
@@ -52,6 +52,7 @@ export default function DropZone() {
   const [dragging, setDragging] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [loadingSample, setLoadingSample] = useState<string | null>(null);
 
   // state management: set dataset
   const setDataset = useDatasetStore((s) => s.setDataset);
@@ -59,6 +60,7 @@ export default function DropZone() {
   // router
   const router = useRouter();
 
+  // handler functions
   const handleFile = useCallback(
     async (file: File) => {
       setLoading(true);
@@ -101,6 +103,20 @@ export default function DropZone() {
     },
     [handleFile],
   );
+
+  const handleSampleDataset = async (fileName: string) => {
+    setLoadingSample(fileName);
+    try {
+      const response = await fetch(`/samples/${fileName}.csv`);
+      const blob = await response.blob();
+      const file = new File([blob], `${fileName}.csv`, {
+        type: "text/csv",
+      });
+      await handleFile(file);
+    } finally {
+      setLoadingSample(null);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center gap-5 w-full max-w-lg mx-auto">
@@ -174,28 +190,26 @@ export default function DropZone() {
 
       {/* Sample datasets */}
       <div className="flex gap-2 w-full">
-        {SAMPLE_DATASETS.map((ds) => (
+        {SAMPLE_DATASETS.map((dataSet) => (
           <button
-            key={ds.name}
-            onClick={() => {
-              // later we will fetch the sample CSV from /public/samples/
-              alert(`Sample ${ds.name} will be added in the next release`);
-            }}
+            key={dataSet.name}
+            onClick={() => handleSampleDataset(dataSet.file)}
             className="flex-1 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg p-2.5 text-left hover:bg-[var(--bg-primary)] transition-colors cursor-pointer"
+            disabled={loadingSample === dataSet.file}
           >
             <div className="text-[12px] font-medium text-[var(--text-primary)]">
-              {ds.name}
+              {dataSet.name}
             </div>
             <div className="text-[10px] text-[var(--text-tertiary)] mt-0.5">
-              {ds.meta}
+              {dataSet.meta}
             </div>
             <span
               className={cn(
                 "inline-block mt-1.5 text-[9px] px-1.5 py-0.5 rounded-full font-medium",
-                ds.tagClass,
+                dataSet.tagClass,
               )}
             >
-              {ds.tag}
+              {dataSet.tag}
             </span>
           </button>
         ))}
