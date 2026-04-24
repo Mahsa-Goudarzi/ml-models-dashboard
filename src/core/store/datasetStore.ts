@@ -1,6 +1,9 @@
+// zustand
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
+
+// types
 import type { Dataset, Column } from "@/types/types";
 
 interface DatasetState {

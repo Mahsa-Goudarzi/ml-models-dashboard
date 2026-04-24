@@ -1,5 +1,9 @@
 export type ColumnType = "numeric" | "categorical" | "datetime" | "boolean";
 export type TaskType = "classification" | "regression";
+export type Activation = "relu" | "sigmoid" | "tanh" | "softmax" | "linear";
+export type ModelType = "neural_net" | "linear" | "decision_tree";
+export type Optimizer = "adam" | "sgd" | "rmsprop";
+export type TrainingStatus = "idle" | "training" | "paused" | "done" | "error";
 
 export interface Column {
   name: string;
@@ -22,4 +26,41 @@ export interface Dataset {
   taskType: TaskType | null;
   targetColumn: string | null;
   fileName: string;
+}
+
+export interface LayerConfig {
+  id: string;
+  units: number;
+  activation: Activation;
+}
+
+export interface ModelConfig {
+  type: ModelType;
+  layers: LayerConfig[];
+  optimizer: Optimizer;
+  learningRate: number;
+  batchSize: number;
+  epochs: number;
+  validationSplit: number;
+  dropout: number;
+}
+
+export interface TrainingMetrics {
+  epoch: number;
+  loss: number;
+  valLoss: number;
+  accuracy?: number;
+  valAccuracy?: number;
+}
+
+export interface ModelResults {
+  confusionMatrix: number[][];
+  classNames: string[];
+  accuracy: number;
+  precision: number;
+  recall: number;
+  f1: number;
+  featureImportance: { feature: string; importance: number }[];
+  rocData: { fpr: number[]; tpr: number[]; auc: number }[];
+  predictions: { actual: unknown; predicted: unknown; confidence: number }[];
 }
