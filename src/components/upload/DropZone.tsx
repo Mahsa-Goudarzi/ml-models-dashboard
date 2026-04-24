@@ -45,6 +45,8 @@ const SAMPLE_DATASETS = [
   },
 ];
 
+const maxFileSize: number = 5 * 1024 * 1024; // 5MB file size limit
+
 export default function DropZone() {
   // states
   const [dragging, setDragging] = useState<boolean>(false);
@@ -62,7 +64,14 @@ export default function DropZone() {
       setLoading(true);
 
       if (!file.name.endsWith(".csv") && !file.name.endsWith(".json")) {
-        setError("Only CSV files supported are for now.");
+        setError("Only CSV files are supported for now.");
+        setLoading(false);
+        return;
+      }
+
+      if (file.size > maxFileSize) {
+        const currentFileSize = (file.size / (1024 * 1024)).toFixed(2);
+        setError(`File is ${currentFileSize}MB. Max allowed file size is 5MB.`);
         setLoading(false);
         return;
       }
