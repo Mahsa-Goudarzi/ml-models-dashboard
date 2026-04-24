@@ -27,24 +27,21 @@ const SAMPLE_DATASETS = [
     meta: "150 rows · 5 cols",
     tag: "classification",
     file: "iris",
-    textColor: "var(--purple-primary)",
-    bgColor: "var(--purple-secondary)",
+    tagClass: "text-[var(--purple-primary)] bg-[var(--purple-secondary)]",
   },
   {
     name: "Titanic",
     meta: "891 rows · 12 cols",
     tag: "binary",
     file: "titanic",
-    textColor: "var(--green-primary)",
-    bgColor: "var(--green-secondary)",
+    tagClass: "text-[var(--green-primary)] bg-[var(--green-secondary)]",
   },
   {
     name: "House Prices",
     meta: "1460 rows · 79 cols",
     tag: "regression",
     file: "houses",
-    textColor: "var(--blue-primary)",
-    bgColor: "var(--blue-secondary)",
+    tagClass: "text-[var(--blue-primary)] bg-[var(--blue-secondary)]",
   },
 ];
 
@@ -62,18 +59,21 @@ export default function DropZone() {
 
   const handleFile = useCallback(
     async (file: File) => {
+      setLoading(true);
+
       if (!file.name.endsWith(".csv") && !file.name.endsWith(".json")) {
-        setError("Only CSV files supported for now");
+        setError("Only CSV files supported are for now.");
+        setLoading(false);
         return;
       }
-      setLoading(true);
+
       setError(null);
       try {
         const dataset = await parseCSV(file);
         setDataset(dataset);
         router.push("/dashboard");
       } catch (e: Error | unknown) {
-        setError("Failed to parse file. Check that it's a valid CSV.");
+        setError("Failed to parse file. Please make sure it's a valid CSV.");
       } finally {
         setLoading(false);
       }
@@ -119,12 +119,12 @@ export default function DropZone() {
         <div className="text-[15px] font-medium text-[#26215C]">
           {loading ? "parsing your dataset…" : "drop your dataset here"}
         </div>
-        <div className="text-[12px] text-[#534AB7] text-center">
+        <div className="text-[12px] text-[var(--purple-primary)] text-center">
           supports CSV · up to 50MB
           <br />
           auto-detects column types and target variable
         </div>
-        <label className="mt-1 px-5 py-2 bg-[#534AB7] hover:bg-[#3C3489] text-white text-[12px] font-medium rounded-md cursor-pointer transition-colors">
+        <label className="mt-1 px-5 py-2 bg-[var(--purple-primary)] hover:bg-[#3C3489] text-white text-[12px] font-medium rounded-md cursor-pointer transition-colors">
           browse files
           <input
             type="file"
@@ -181,7 +181,7 @@ export default function DropZone() {
             <span
               className={cn(
                 "inline-block mt-1.5 text-[9px] px-1.5 py-0.5 rounded-full font-medium",
-                `text-[${ds.textColor}] bg-[${ds.bgColor}]`,
+                ds.tagClass,
               )}
             >
               {ds.tag}
