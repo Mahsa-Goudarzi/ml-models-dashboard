@@ -64,3 +64,15 @@ export interface ModelResults {
   rocData: { fpr: number[]; tpr: number[]; auc: number }[];
   predictions: { actual: unknown; predicted: unknown; confidence: number }[];
 }
+
+export interface PointType {
+  x: number;
+  y: number;
+  label?: string;
+}
+export interface ScatterPlotPropsType {
+  data: PointType[];
+  xLabel: string;
+  yLabel: string;
+  colorMap?: Record<string, string>;
+}
