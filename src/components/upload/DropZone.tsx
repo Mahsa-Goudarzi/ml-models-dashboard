@@ -45,7 +45,7 @@ const SAMPLE_DATASETS = [
   },
 ];
 
-const maxFileSize: number = 5 * 1024 * 1024; // 5MB file size limit
+const maxFileSize: number = 50 * 1024 * 1024; // 5MB file size limit
 
 export default function DropZone() {
   // states
