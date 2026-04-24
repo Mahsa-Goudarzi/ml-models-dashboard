@@ -76,3 +76,7 @@ export interface ScatterPlotPropsType {
   yLabel: string;
   colorMap?: Record<string, string>;
 }
+
+export interface LossCurvePropsType {
+  history: TrainingMetrics[];
+}
