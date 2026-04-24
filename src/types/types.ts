@@ -80,3 +80,10 @@ export interface ScatterPlotPropsType {
 export interface LossCurvePropsType {
   history: TrainingMetrics[];
 }
+
+export interface LayerVizType {
+  neurons: number;
+  color: string;
+  strokeColor: string;
+  label: string;
+}
