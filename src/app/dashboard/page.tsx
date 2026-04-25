@@ -72,12 +72,14 @@ export default function DashboardPage() {
 
   // bar height calculator function
   const CalculateBarHeights = (numCols: Column[]) => {
-    const maxStd = Math.max(...numCols.map((c) => c.std ?? 0), 1);
-    const maxMean = Math.max(...numCols.map((c) => Math.abs(c.mean ?? 0)), 1);
-    return numCols.slice(0, 12).map((col) => ({
-      mean: Math.max(15, (Math.abs(col.mean ?? 0) / maxMean) * 75),
-      std: Math.max(8, ((col.std ?? 0) / maxStd) * 40),
-    }));
+    const maxRange = Math.max(
+      ...numCols.map((c) => (c.max ?? 0) - (c.min ?? 0)),
+      1,
+    );
+    return numCols.slice(0, 12).map((col) => {
+      const range = (col.max ?? 0) - (col.min ?? 0);
+      return Math.max(4, Math.round((range / maxRange) * 56));
+    });
   };
 
   // useEffect handling the case when no dataset uploaded
@@ -131,35 +133,21 @@ export default function DashboardPage() {
             {numericCols.slice(0, 12).map((col, i) => (
               <div
                 key={col.name}
-                className="flex-1 flex flex-col items-center gap-px"
-                title={`${col.name}: μ=${col.mean?.toFixed(2)} σ=${col.std?.toFixed(2)}`}
-              >
-                <div
-                  className="w-full rounded-t opacity-40"
-                  style={{
-                    height: `${barHeights[i].std}%`,
-                    background:
-                      i % 3 === 0
-                        ? "#7F77DD"
-                        : i % 3 === 1
-                          ? "#378ADD"
-                          : "#1D9E75",
-                  }}
-                />
-                <div
-                  className="w-full rounded-t"
-                  style={{
-                    height: `${barHeights[i].mean}%`,
-                    background:
-                      i % 3 === 0
-                        ? "#7F77DD"
-                        : i % 3 === 1
-                          ? "#378ADD"
-                          : "#1D9E75",
-                    opacity: 0.8,
-                  }}
-                />
-              </div>
+                className="flex-1 rounded-t transition-all"
+                style={{
+                  height: barHeights[i],
+                  background:
+                    i % 4 === 0
+                      ? "#7F77DD"
+                      : i % 4 === 1
+                        ? "#378ADD"
+                        : i % 4 === 2
+                          ? "#1D9E75"
+                          : "#EBAC97",
+                  opacity: 0.8,
+                }}
+                title={`${col.name}: ${col.min?.toFixed(1)} – ${col.max?.toFixed(1)}`}
+              />
             ))}
           </div>
         </Panel>
