@@ -17,6 +17,7 @@ export interface Column {
   uniqueCount: number;
   isTarget: boolean;
   values?: (string | number)[]; // sample for EDA
+  isIdentifier: boolean;
 }
 
 export interface Dataset {

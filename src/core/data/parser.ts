@@ -13,6 +13,36 @@ function detectType(values: unknown[]): ColumnType {
   return "categorical";
 }
 
+function isIdentifierColumn(name: string, values: unknown[]): boolean {
+  const idNames = [
+    "id",
+    "index",
+    "row",
+    "no",
+    "num",
+    "number",
+    "passengerid",
+    "userid",
+    "customerid",
+  ];
+  if (idNames.includes(name.toLowerCase())) return true;
+  if (/^(id|idx|index)$/i.test(name)) return true;
+  if (/_id$/i.test(name) || /^id_/i.test(name)) return true;
+
+  // if the column valuesa are sequential integers, it's probably the id column
+  const nums = values.map(Number).filter((n) => !isNaN(n));
+  if (nums.length < values.length * 0.9) return false;
+
+  const sorted = [...nums].sort((a, b) => a - b);
+  const isSequential = sorted.every(
+    (v, i) => i === 0 || v - sorted[i - 1] <= 2,
+  );
+  const allUnique = new Set(nums).size === nums.length;
+  const isInteger = nums.every((n) => Number.isInteger(n));
+
+  return allUnique && isSequential && isInteger && nums.length > 10;
+}
+
 function analyzeColumn(name: string, rawValues: unknown[]): Column {
   const nonNull = rawValues.filter((v) => v != null && v !== "");
   const nullCount = rawValues.length - nonNull.length;
@@ -26,6 +56,7 @@ function analyzeColumn(name: string, rawValues: unknown[]): Column {
     uniqueCount: unique.size,
     isTarget: false,
     values: nonNull.slice(0, 500) as (string | number)[],
+    isIdentifier: type === "numeric" && isIdentifierColumn(name, nonNull),
   };
 
   if (type === "numeric") {
