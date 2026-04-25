@@ -22,8 +22,9 @@ export default function NeuralNetVisualization() {
   // network constants
   const layers: LayerVizType[] = useMemo(() => {
     const inputN =
-      dataset?.columns.filter((c) => !c.isTarget && c.type === "numeric")
-        .length ?? 4;
+      dataset?.columns.filter(
+        (c) => !c.isTarget && !c.isIdentifier && c.type === "numeric",
+      ).length ?? 4;
     const outputN = dataset
       ? new Set(dataset.rows.map((r) => String(r[dataset.targetColumn ?? ""])))
           .size
@@ -63,8 +64,18 @@ export default function NeuralNetVisualization() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const W = canvas.width;
-    const H = canvas.height;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+
+    // setting the canvas width and height according to the device pixel ratio to ensure sharp rendering on high-DPI screens
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+
+    ctx.scale(dpr, dpr);
+    ctx.lineWidth = 1 / dpr;
+
+    const W = rect.width;
+    const H = rect.height;
     ctx.clearRect(0, 0, W, H);
 
     const layerX = layers.map((_, i) => (W / (layers.length + 1)) * (i + 1));
@@ -138,7 +149,6 @@ export default function NeuralNetVisualization() {
       width={340}
       height={200}
       className="w-full h-full"
-      style={{ imageRendering: "pixelated" }}
     />
   );
 }
