@@ -103,8 +103,7 @@ export default function DashboardPage() {
   const lastMetrics = history.at(-1);
 
   const barHeights = CalculateBarHeights(numericCols);
-  console.log(numericCols.slice(0, 12));
-  console.log(barHeights);
+
   return (
     <AppShell>
       <div className="flex-1 grid grid-cols-2 grid-rows-2 gap-px bg-[var(--border)] overflow-hidden">
@@ -121,7 +120,7 @@ export default function DashboardPage() {
               value={
                 lastMetrics?.accuracy
                   ? `${lastMetrics.accuracy.toFixed(1)}%`
-                  : "—"
+                  : "-"
               }
               color="#1D9E75"
             />
@@ -133,26 +132,36 @@ export default function DashboardPage() {
             {numericCols.slice(0, 12).map((col, i) => (
               <div
                 key={col.name}
-                className="flex-1 rounded-t transition-all"
-                style={{
-                  height: barHeights[i],
-                  background:
-                    i % 4 === 0
-                      ? "#7F77DD"
-                      : i % 4 === 1
-                        ? "#378ADD"
-                        : i % 4 === 2
-                          ? "#1D9E75"
-                          : "#EBAC97",
-                  opacity: 0.8,
-                }}
-                title={`${col.name}: ${col.min?.toFixed(1)} – ${col.max?.toFixed(1)}`}
-              />
+                className="flex-1 flex flex-col items-center gap-0.5"
+              >
+                <div
+                  className="w-full rounded-t transition-all"
+                  style={{
+                    height: barHeights[i],
+                    background:
+                      i % 4 === 0
+                        ? "#7F77DD"
+                        : i % 4 === 1
+                          ? "#378ADD"
+                          : i % 4 === 2
+                            ? "#1D9E75"
+                            : "#EBAC97",
+                    opacity: 0.8,
+                  }}
+                  title={`${col.name}: ${col.min?.toFixed(1)} – ${col.max?.toFixed(1)}`}
+                />
+                <div
+                  className="text-[8px] text-[var(--text-tertiary)] w-full text-center truncate"
+                  title={col.name}
+                >
+                  {col.name}
+                </div>
+              </div>
             ))}
           </div>
         </Panel>
 
-        <Panel title={`scatter — ${xCol} vs ${yCol}`}>
+        <Panel title={`scatter - ${xCol} vs ${yCol}`}>
           {scatterData.length > 0 ? (
             <ScatterPlot data={scatterData} xLabel={xCol} yLabel={yCol} />
           ) : (
