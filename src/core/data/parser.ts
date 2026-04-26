@@ -129,15 +129,19 @@ export async function parseCSV(file: File): Promise<Dataset> {
 
         if (targetIdx !== -1) columns[targetIdx].isTarget = true;
         const targetCol = columns.find((c) => c.isTarget);
+        const isLikelyClassification =
+          targetCol?.type === "numeric" && targetCol.uniqueCount <= 20;
 
         resolve({
           rows,
           columns,
           rowCount: rows.length,
           taskType:
-            targetCol?.type === "numeric"
-              ? MODELS.Regression
-              : MODELS.Classification,
+            targetCol?.type === "categorical"
+              ? MODELS.Classification
+              : isLikelyClassification
+                ? MODELS.Classification
+                : MODELS.Regression,
           targetColumn: targetCol?.name ?? null,
           fileName: file.name,
         });
