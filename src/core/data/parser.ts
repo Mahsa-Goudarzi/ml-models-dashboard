@@ -9,12 +9,29 @@ import { COLUMNS, TASKS } from "@/const/const";
 function detectType(values: unknown[]): ColumnType {
   const sample = values.filter((v) => v != null && v !== "").slice(0, 200);
   if (sample.length === 0) return COLUMNS.Category;
+
+  const boolValues = new Set([
+    "true",
+    "false",
+    "0",
+    "1",
+    "yes",
+    "no",
+    "t",
+    "f",
+  ]);
+  const unique = new Set(sample.map((v) => String(v).toLowerCase()));
+  if (unique.size === 2 && [...unique].every((v) => boolValues.has(v)))
+    return COLUMNS.Boolean;
+
   const numericCount = sample.filter((v) => !isNaN(Number(v))).length;
   if (numericCount / sample.length > 0.85) return COLUMNS.Number;
-  const unique = new Set(sample.map(String));
+
   if (unique.size <= 30) return COLUMNS.Category;
+
   const dateCount = sample.filter((v) => !isNaN(Date.parse(String(v)))).length;
   if (dateCount / sample.length > 0.8) return COLUMNS.Datetime;
+
   return COLUMNS.Category;
 }
 
@@ -139,7 +156,9 @@ export async function parseCSV(file: File): Promise<Dataset> {
         }
 
         const taskType: TaskType =
-          targetCol?.type === COLUMNS.Category || isLikelyClassification
+          targetCol?.type === COLUMNS.Category ||
+          targetCol?.type === COLUMNS.Boolean ||
+          isLikelyClassification
             ? TASKS.Classification
             : TASKS.Regression;
 
