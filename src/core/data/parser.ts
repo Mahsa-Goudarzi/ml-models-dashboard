@@ -4,7 +4,7 @@ import Papa from "papaparse";
 import type { Dataset, Column, ColumnType, TaskType } from "@/types/types";
 
 // constants
-import { MODELS } from "@/const/const";
+import { TASKS } from "@/const/const";
 
 function detectType(values: unknown[]): ColumnType {
   const sample = values.filter((v) => v != null && v !== "").slice(0, 200);
@@ -140,8 +140,8 @@ export async function parseCSV(file: File): Promise<Dataset> {
 
         const taskType: TaskType =
           targetCol?.type === "categorical" || isLikelyClassification
-            ? MODELS.Classification
-            : MODELS.Regression;
+            ? TASKS.Classification
+            : TASKS.Regression;
 
         resolve({
           rows,

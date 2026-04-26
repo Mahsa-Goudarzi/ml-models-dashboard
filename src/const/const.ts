@@ -1,4 +1,4 @@
-export const MODELS = {
+export const TASKS = {
   Classification: "classification",
   Regression: "regression",
 };

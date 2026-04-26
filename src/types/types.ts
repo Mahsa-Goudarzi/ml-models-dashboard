@@ -1,7 +1,8 @@
-import { MODELS } from "@/const/const";
+// types
+import { TASKS } from "@/const/const";
 
 export type ColumnType = "numeric" | "categorical" | "datetime" | "boolean";
-export type TaskType = typeof MODELS.Classification | typeof MODELS.Regression;
+export type TaskType = typeof TASKS.Classification | typeof TASKS.Regression;
 export type Activation = "relu" | "sigmoid" | "tanh" | "softmax" | "linear";
 export type ModelType = "neural_net" | "linear" | "decision_tree";
 export type Optimizer = "adam" | "sgd" | "rmsprop";

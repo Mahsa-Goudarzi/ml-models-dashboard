@@ -11,7 +11,7 @@ import { useDatasetStore } from "@/core/store/datasetStore";
 import { LayerVizType } from "@/types/types";
 
 // constants
-import { MODELS } from "@/const/const";
+import { TASKS } from "@/const/const";
 
 export default function NeuralNetVisualization({
   classes = "",
@@ -33,7 +33,7 @@ export default function NeuralNetVisualization({
         (c) => !c.isTarget && !c.isIdentifier && c.type === "numeric",
       ).length ?? 4;
 
-    const isRegression = dataset?.taskType === MODELS.Regression;
+    const isRegression = dataset?.taskType === TASKS.Regression;
 
     const outputN = isRegression
       ? 1
