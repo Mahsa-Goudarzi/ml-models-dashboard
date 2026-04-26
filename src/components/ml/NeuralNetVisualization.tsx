@@ -10,6 +10,9 @@ import { useDatasetStore } from "@/core/store/datasetStore";
 // types
 import { LayerVizType } from "@/types/types";
 
+// constants
+import { MODELS } from "@/const/const";
+
 export default function NeuralNetVisualization({
   classes = "",
 }: {
@@ -29,10 +32,18 @@ export default function NeuralNetVisualization({
       dataset?.columns.filter(
         (c) => !c.isTarget && !c.isIdentifier && c.type === "numeric",
       ).length ?? 4;
-    const outputN = dataset
-      ? new Set(dataset.rows.map((r) => String(r[dataset.targetColumn ?? ""])))
-          .size
-      : 3;
+
+    const isRegression = dataset?.taskType === MODELS.Regression;
+
+    const outputN = isRegression
+      ? 1
+      : dataset
+        ? new Set(
+            dataset.rows.map((r) => String(r[dataset.targetColumn ?? ""])),
+          ).size
+        : 3;
+
+    const outputLabel = dataset?.targetColumn ?? "output";
 
     return [
       {
@@ -51,7 +62,8 @@ export default function NeuralNetVisualization({
         neurons: Math.min(outputN, 6),
         color: "#E1F5EE",
         strokeColor: "#1D9E75",
-        label: "output",
+        label:
+          outputLabel.length > 10 ? outputLabel.slice(0, 9) + "…" : outputLabel,
       },
     ];
   }, [config.layers, dataset]);
