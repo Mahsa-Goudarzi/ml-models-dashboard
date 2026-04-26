@@ -1,5 +1,10 @@
 import Papa from "papaparse";
+
+// types
 import type { Dataset, Column, ColumnType } from "@/types/types";
+
+// constants
+import { MODELS } from "@/const/const";
 
 function detectType(values: unknown[]): ColumnType {
   const sample = values.filter((v) => v != null && v !== "").slice(0, 200);
@@ -130,7 +135,9 @@ export async function parseCSV(file: File): Promise<Dataset> {
           columns,
           rowCount: rows.length,
           taskType:
-            targetCol?.type === "numeric" ? "regression" : "classification",
+            targetCol?.type === "numeric"
+              ? MODELS.Regression
+              : MODELS.Classification,
           targetColumn: targetCol?.name ?? null,
           fileName: file.name,
         });

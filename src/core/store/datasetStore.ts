@@ -6,6 +6,9 @@ import { immer } from "zustand/middleware/immer";
 // types
 import type { Dataset, Column } from "@/types/types";
 
+// constants
+import { MODELS } from "@/const/const";
+
 interface DatasetState {
   dataset: Dataset | null;
   isLoading: boolean;
@@ -40,7 +43,9 @@ export const useDatasetStore = create<DatasetState>()(
             (c: Column) => c.name === col,
           );
           s.dataset.taskType =
-            targetCol?.type === "numeric" ? "regression" : "classification";
+            targetCol?.type === "numeric"
+              ? MODELS.Regression
+              : MODELS.Classification;
         }),
 
       updateColumn: (name, updates) =>
