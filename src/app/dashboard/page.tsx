@@ -126,7 +126,7 @@ export default function DashboardPage() {
             />
           </div>
           <div className="text-[10px] font-medium text-[var(--text-secondary)] uppercase tracking-[0.6px] mt-1">
-            feature distribution
+            numerical features distribution
           </div>
           <div className="flex items-end gap-1 h-16">
             {numericCols.slice(0, 12).map((col, i) => (
