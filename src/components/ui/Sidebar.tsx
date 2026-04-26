@@ -24,6 +24,9 @@ import {
   Upload,
 } from "lucide-react";
 
+// constants
+import { TRAINING_STATUS } from "@/const/const";
+
 // constant nav items
 const navItems = [
   {
@@ -111,9 +114,10 @@ export default function Sidebar() {
             >
               <Icon size={13} />
               {item.label}
-              {item.label === "Train" && status === "training" && (
-                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#1D9E75] animate-pulse" />
-              )}
+              {item.label === "Train" &&
+                status === TRAINING_STATUS.Training && (
+                  <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#1D9E75] animate-pulse" />
+                )}
               {item.label === "Dataset" && dataset && (
                 <span className="ml-auto text-[9px] bg-[var(--purple-secondary)] text-[var(--purple-primary)] px-1.5 py-0.5 rounded-full font-medium">
                   CSV

@@ -20,6 +20,9 @@ import NeuralNetVisualization from "@/components/ml/NeuralNetVisualization";
 // types
 import { Column } from "@/types/types";
 
+// constants
+import { COLUMNS } from "@/const/const";
+
 function Panel({
   title,
   children,
@@ -91,7 +94,7 @@ export default function DashboardPage() {
 
   // scatter plot constants
   const numericCols = dataset.columns.filter(
-    (c) => c.type === "numeric" && !c.isTarget && !c.isIdentifier,
+    (c) => c.type === COLUMNS.Number && !c.isTarget && !c.isIdentifier,
   );
   const xCol = numericCols[2]?.name ?? numericCols[0]?.name ?? "";
   const yCol = numericCols[3]?.name ?? numericCols[1]?.name ?? "";

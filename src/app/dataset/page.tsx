@@ -12,6 +12,9 @@ import { useDatasetStore } from "@/core/store/datasetStore";
 // components
 import AppShell from "@/components/ui/AppShell";
 
+// constants
+import { COLUMNS } from "@/const/const";
+
 export default function DatasetPage() {
   // router
   const router = useRouter();
@@ -35,7 +38,7 @@ export default function DatasetPage() {
   const filteredCols = dataset.columns.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase()),
   );
-  const numericCols = dataset.columns.filter((c) => c.type === "numeric");
+  const numericCols = dataset.columns.filter((c) => c.type === COLUMNS.Number);
   const nullCount = dataset.columns.reduce((a, c) => a + c.nullCount, 0);
 
   return (
@@ -76,7 +79,7 @@ export default function DatasetPage() {
           {filteredCols.map((col) => {
             const range = (col.max ?? 0) - (col.min ?? 0);
             const fillPct =
-              col.type === "numeric" && !col.isIdentifier && range > 0
+              col.type === COLUMNS.Number && !col.isIdentifier && range > 0
                 ? (((col.mean ?? 0) - (col.min ?? 0)) / range) * 100
                 : 100;
             const isSelected = selectedCol === col.name;
@@ -102,7 +105,7 @@ export default function DatasetPage() {
                 <div
                   className="h-1 bg-[var(--border)] rounded-full mb-1.5 overflow-hidden"
                   title={
-                    col.type === "numeric" && !col.isIdentifier
+                    col.type === COLUMNS.Number && !col.isIdentifier
                       ? `mean position: ${col.mean?.toFixed(2)} (between ${col.min?.toFixed(2)} - ${col.max?.toFixed(2)})`
                       : undefined
                   }
@@ -120,7 +123,7 @@ export default function DatasetPage() {
                   />
                 </div>
                 <div className="flex justify-between text-[9px] text-[var(--text-tertiary)]">
-                  {col.type === "numeric" ? (
+                  {col.type === COLUMNS.Number ? (
                     <>
                       <span>{col.min?.toFixed(1)}</span>
                       <span>{col.max?.toFixed(1)}</span>
@@ -150,7 +153,7 @@ export default function DatasetPage() {
                     {col.name}
                   </div>
                 </div>
-                {col.type === "numeric" && !col.isIdentifier && (
+                {col.type === COLUMNS.Number && !col.isIdentifier && (
                   <>
                     {[
                       { label: "mean", value: col.mean?.toFixed(3) },
@@ -170,7 +173,7 @@ export default function DatasetPage() {
                     ))}
                   </>
                 )}
-                {col.type === "categorical" && (
+                {col.type === COLUMNS.Category && (
                   <div className="flex flex-col gap-0.5">
                     <div className="text-[10px] text-[var(--text-tertiary)]">
                       unique values
@@ -258,7 +261,9 @@ export default function DatasetPage() {
                   {dataset.columns.map((col) => {
                     const val = row[col.name];
                     const isNull = val == null || val === "";
-                    const isCat = col.type === "categorical";
+                    const isCat =
+                      col.type === COLUMNS.Category ||
+                      col.type === COLUMNS.Boolean;
 
                     return (
                       <td

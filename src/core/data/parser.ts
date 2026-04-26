@@ -4,18 +4,18 @@ import Papa from "papaparse";
 import type { Dataset, Column, ColumnType, TaskType } from "@/types/types";
 
 // constants
-import { TASKS } from "@/const/const";
+import { COLUMNS, TASKS } from "@/const/const";
 
 function detectType(values: unknown[]): ColumnType {
   const sample = values.filter((v) => v != null && v !== "").slice(0, 200);
-  if (sample.length === 0) return "categorical";
+  if (sample.length === 0) return COLUMNS.Category;
   const numericCount = sample.filter((v) => !isNaN(Number(v))).length;
-  if (numericCount / sample.length > 0.85) return "numeric";
+  if (numericCount / sample.length > 0.85) return COLUMNS.Number;
   const unique = new Set(sample.map(String));
-  if (unique.size <= 30) return "categorical";
+  if (unique.size <= 30) return COLUMNS.Category;
   const dateCount = sample.filter((v) => !isNaN(Date.parse(String(v)))).length;
-  if (dateCount / sample.length > 0.8) return "datetime";
-  return "categorical";
+  if (dateCount / sample.length > 0.8) return COLUMNS.Datetime;
+  return COLUMNS.Category;
 }
 
 function isIdentifierColumn(name: string, values: unknown[]): boolean {
@@ -61,10 +61,10 @@ function analyzeColumn(name: string, rawValues: unknown[]): Column {
     uniqueCount: unique.size,
     isTarget: false,
     values: nonNull.slice(0, 500) as (string | number)[],
-    isIdentifier: type === "numeric" && isIdentifierColumn(name, nonNull),
+    isIdentifier: type === COLUMNS.Number && isIdentifierColumn(name, nonNull),
   };
 
-  if (type === "numeric") {
+  if (type === COLUMNS.Number) {
     const nums = nonNull
       .map(Number)
       .filter((n) => !isNaN(n))
@@ -123,7 +123,7 @@ export async function parseCSV(file: File): Promise<Dataset> {
           targetIdx =
             columns
               .map((c, i) => ({ c, i }))
-              .filter(({ c }) => c.type === "categorical")
+              .filter(({ c }) => c.type === COLUMNS.Category)
               .at(-1)?.i ?? -1;
         }
 
@@ -131,15 +131,15 @@ export async function parseCSV(file: File): Promise<Dataset> {
 
         const targetCol = columns.find((c) => c.isTarget);
         const isLikelyClassification =
-          targetCol?.type === "numeric" && targetCol.uniqueCount <= 20;
+          targetCol?.type === COLUMNS.Number && targetCol.uniqueCount <= 20;
 
         if (isLikelyClassification && targetCol) {
           const idx = columns.findIndex((c) => c.isTarget);
-          columns[idx] = { ...columns[idx], type: "categorical" };
+          columns[idx] = { ...columns[idx], type: COLUMNS.Category };
         }
 
         const taskType: TaskType =
-          targetCol?.type === "categorical" || isLikelyClassification
+          targetCol?.type === COLUMNS.Category || isLikelyClassification
             ? TASKS.Classification
             : TASKS.Regression;
 

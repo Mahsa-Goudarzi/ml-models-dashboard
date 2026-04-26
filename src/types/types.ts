@@ -1,12 +1,39 @@
 // types
-import { TASKS } from "@/const/const";
+import {
+  COLUMNS,
+  TASKS,
+  ACTIVATIONS,
+  MODELS,
+  OPTIMIZERS,
+  TRAINING_STATUS,
+} from "@/const/const";
 
-export type ColumnType = "numeric" | "categorical" | "datetime" | "boolean";
+export type ColumnType =
+  | typeof COLUMNS.Number
+  | typeof COLUMNS.Category
+  | typeof COLUMNS.Datetime
+  | typeof COLUMNS.Boolean;
 export type TaskType = typeof TASKS.Classification | typeof TASKS.Regression;
-export type Activation = "relu" | "sigmoid" | "tanh" | "softmax" | "linear";
-export type ModelType = "neural_net" | "linear" | "decision_tree";
-export type Optimizer = "adam" | "sgd" | "rmsprop";
-export type TrainingStatus = "idle" | "training" | "paused" | "done" | "error";
+export type Activation =
+  | typeof ACTIVATIONS.ReLU
+  | typeof ACTIVATIONS.Sigmoid
+  | typeof ACTIVATIONS.Tanh
+  | typeof ACTIVATIONS.Softmax
+  | typeof ACTIVATIONS.Linear;
+export type ModelType =
+  | typeof MODELS.NN
+  | typeof MODELS.Linear
+  | typeof MODELS.Tree;
+export type Optimizer =
+  | typeof OPTIMIZERS.Adam
+  | typeof OPTIMIZERS.SGD
+  | typeof OPTIMIZERS.RMSProp;
+export type TrainingStatus =
+  | typeof TRAINING_STATUS.Idle
+  | typeof TRAINING_STATUS.Training
+  | typeof TRAINING_STATUS.Paused
+  | typeof TRAINING_STATUS.Done
+  | typeof TRAINING_STATUS.Error;
 
 export interface Column {
   name: string;

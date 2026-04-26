@@ -11,7 +11,7 @@ import { useDatasetStore } from "@/core/store/datasetStore";
 import { LayerVizType } from "@/types/types";
 
 // constants
-import { TASKS } from "@/const/const";
+import { COLUMNS, TASKS, TRAINING_STATUS } from "@/const/const";
 
 export default function NeuralNetVisualization({
   classes = "",
@@ -30,7 +30,7 @@ export default function NeuralNetVisualization({
   const layers: LayerVizType[] = useMemo(() => {
     const inputN =
       dataset?.columns.filter(
-        (c) => !c.isTarget && !c.isIdentifier && c.type === "numeric",
+        (c) => !c.isTarget && !c.isIdentifier && c.type === COLUMNS.Number,
       ).length ?? 4;
 
     const isRegression = dataset?.taskType === TASKS.Regression;
@@ -159,7 +159,7 @@ export default function NeuralNetVisualization({
   const animRef = useRef<number>(null);
   useEffect(() => {
     const status = useTrainingStore.getState().status;
-    if (status === "training") {
+    if (status === TRAINING_STATUS.Training) {
       const tick = () => {
         animRef.current = requestAnimationFrame(tick);
       };

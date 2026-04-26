@@ -11,6 +11,14 @@ import type {
   TrainingStatus,
 } from "@/types/types";
 
+// contants
+import {
+  ACTIVATIONS,
+  MODELS,
+  OPTIMIZERS,
+  TRAINING_STATUS,
+} from "@/const/const";
+
 interface TrainingState {
   config: ModelConfig;
   status: TrainingStatus;
@@ -28,12 +36,12 @@ interface TrainingState {
 }
 
 const DEFAULT_CONFIG: ModelConfig = {
-  type: "neural_net",
+  type: MODELS.NN,
   layers: [
-    { id: "h1", units: 8, activation: "relu" },
-    { id: "h2", units: 6, activation: "relu" },
+    { id: "h1", units: 8, activation: ACTIVATIONS.ReLU },
+    { id: "h2", units: 6, activation: ACTIVATIONS.ReLU },
   ],
-  optimizer: "adam",
+  optimizer: OPTIMIZERS.Adam,
   learningRate: 0.001,
   batchSize: 32,
   epochs: 100,
@@ -45,7 +53,7 @@ export const useTrainingStore = create<TrainingState>()(
   subscribeWithSelector(
     immer((set) => ({
       config: DEFAULT_CONFIG,
-      status: "idle",
+      status: TRAINING_STATUS.Idle,
       history: [],
       currentEpoch: 0,
       results: null,
@@ -79,7 +87,7 @@ export const useTrainingStore = create<TrainingState>()(
 
       reset: () =>
         set((s) => {
-          s.status = "idle";
+          s.status = TRAINING_STATUS.Idle;
           s.history = [];
           s.currentEpoch = 0;
           s.results = null;
