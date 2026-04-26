@@ -148,7 +148,7 @@ export default function DashboardPage() {
                             : "#EBAC97",
                     opacity: 0.8,
                   }}
-                  title={`${col.name}: ${col.min?.toFixed(1)} – ${col.max?.toFixed(1)}`}
+                  title={`${col.name} range: ${col.min?.toFixed(1)} – ${col.max?.toFixed(1)}`}
                 />
                 <div
                   className="text-[8px] text-[var(--text-tertiary)] w-full text-center truncate"
@@ -172,7 +172,7 @@ export default function DashboardPage() {
         </Panel>
 
         <Panel title="neural network">
-          <NeuralNetVisualization />
+          <NeuralNetVisualization classes="max-h-[260]" />
           <div className="text-[10px] text-[var(--text-tertiary)] text-center">
             {useTrainingStore
               .getState()

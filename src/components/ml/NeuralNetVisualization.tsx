@@ -10,7 +10,11 @@ import { useDatasetStore } from "@/core/store/datasetStore";
 // types
 import { LayerVizType } from "@/types/types";
 
-export default function NeuralNetVisualization() {
+export default function NeuralNetVisualization({
+  classes = "",
+}: {
+  classes?: string;
+}) {
   // app-wide states
   const dataset = useDatasetStore((s) => s.dataset);
   const config = useTrainingStore((s) => s.config);
@@ -61,72 +65,83 @@ export default function NeuralNetVisualization() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
 
-    const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
+    const draw = () => {
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
 
-    // setting the canvas width and height according to the device pixel ratio to ensure sharp rendering on high-DPI screens
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
 
-    ctx.scale(dpr, dpr);
-    ctx.lineWidth = 1 / dpr;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
 
-    const W = rect.width;
-    const H = rect.height;
-    ctx.clearRect(0, 0, W, H);
+      const W = rect.width;
+      const H = rect.height;
 
-    const layerX = layers.map((_, i) => (W / (layers.length + 1)) * (i + 1));
-    const neuronY = (layerIdx: number) => {
-      const n = layers[layerIdx].neurons;
-      return Array.from(
-        { length: n },
-        (_, i) => H / 2 + (i - (n - 1) / 2) * (H / (n + 2)),
-      );
-    };
+      const radius = Math.min(W / layers.length, H) * 0.07;
+      const labelHeight = 20;
+      const paddingTop = radius + 8;
+      const drawH = H - labelHeight - paddingTop;
 
-    // Draw connections
-    layers.forEach((_, li) => {
-      if (li === layers.length - 1) return;
-      const fromYs = neuronY(li);
-      const toYs = neuronY(li + 1);
-      fromYs.forEach((fy) => {
-        toYs.forEach((ty) => {
-          ctx.beginPath();
-          ctx.moveTo(layerX[li], fy);
-          ctx.lineTo(layerX[li + 1], ty);
-          ctx.strokeStyle = `rgba(127, 119, 221, ${0.08 + activity * 0.15})`;
-          ctx.lineWidth = 0.7;
-          ctx.stroke();
+      ctx.clearRect(0, 0, W, H);
+
+      const layerX = layers.map((_, i) => (W / (layers.length + 1)) * (i + 1));
+
+      const neuronY = (layerIdx: number) => {
+        const n = layers[layerIdx].neurons;
+        const spacing = drawH / (n + 1);
+        return Array.from(
+          { length: n },
+          (_, i) => paddingTop + spacing * (i + 1),
+        );
+      };
+
+      // connections
+      layers.forEach((_, li) => {
+        if (li === layers.length - 1) return;
+        neuronY(li).forEach((fy) => {
+          neuronY(li + 1).forEach((ty) => {
+            ctx.beginPath();
+            ctx.moveTo(layerX[li], fy);
+            ctx.lineTo(layerX[li + 1], ty);
+            ctx.strokeStyle = `rgba(127, 119, 221, ${0.06 + activity * 0.12})`;
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          });
         });
       });
-    });
 
-    // Draw neurons
-    layers.forEach((layer, li) => {
-      const ys = neuronY(li);
-      ys.forEach((y, ni) => {
-        const pulse = lastMetrics
-          ? Math.sin(Date.now() / 400 + li * 1.2 + ni * 0.8) * 0.15 + 0.85
-          : 1;
-        ctx.beginPath();
-        ctx.arc(layerX[li], y, 10, 0, Math.PI * 2);
-        ctx.fillStyle = layer.color;
-        ctx.fill();
-        ctx.strokeStyle = layer.strokeColor;
-        ctx.lineWidth = 1.5 * pulse;
-        ctx.stroke();
+      // neurons
+      layers.forEach((layer, li) => {
+        neuronY(li).forEach((y, ni) => {
+          const pulse = lastMetrics
+            ? Math.sin(Date.now() / 400 + li * 1.2 + ni * 0.8) * 0.15 + 0.85
+            : 1;
+          ctx.beginPath();
+          ctx.arc(layerX[li], y, radius, 0, Math.PI * 2);
+          ctx.fillStyle = layer.color;
+          ctx.fill();
+          ctx.strokeStyle = layer.strokeColor;
+          ctx.lineWidth = 1.5 * pulse;
+          ctx.stroke();
+        });
+
+        ctx.fillStyle = "rgba(136,135,128,0.8)";
+        ctx.font = `${Math.max(9, radius * 0.85)}px sans-serif`;
+        ctx.textAlign = "center";
+        ctx.fillText(layer.label, layerX[li], H - 4);
       });
+    };
 
-      // Layer label
-      ctx.fillStyle = "rgba(136,135,128,0.8)";
-      ctx.font = "9px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(layer.label, layerX[li], H - 6);
-    });
-  });
+    const ro = new ResizeObserver(() => draw());
+    ro.observe(canvas);
+    draw();
+
+    return () => ro.disconnect();
+  }, [layers, lastMetrics, activity]);
 
   // Animate when training
   const animRef = useRef<number>(null);
@@ -143,12 +158,5 @@ export default function NeuralNetVisualization() {
     };
   }, [history]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      width={340}
-      height={200}
-      className="w-full h-full"
-    />
-  );
+  return <canvas ref={canvasRef} className={`w-full h-full ${classes}`} />;
 }
