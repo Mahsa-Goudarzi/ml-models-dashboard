@@ -1,7 +1,7 @@
 import Papa from "papaparse";
 
 // types
-import type { Dataset, Column, ColumnType } from "@/types/types";
+import type { Dataset, Column, ColumnType, TaskType } from "@/types/types";
 
 // constants
 import { MODELS } from "@/const/const";
@@ -128,20 +128,26 @@ export async function parseCSV(file: File): Promise<Dataset> {
         }
 
         if (targetIdx !== -1) columns[targetIdx].isTarget = true;
+
         const targetCol = columns.find((c) => c.isTarget);
         const isLikelyClassification =
           targetCol?.type === "numeric" && targetCol.uniqueCount <= 20;
+
+        if (isLikelyClassification && targetCol) {
+          const idx = columns.findIndex((c) => c.isTarget);
+          columns[idx] = { ...columns[idx], type: "categorical" };
+        }
+
+        const taskType: TaskType =
+          targetCol?.type === "categorical" || isLikelyClassification
+            ? MODELS.Classification
+            : MODELS.Regression;
 
         resolve({
           rows,
           columns,
           rowCount: rows.length,
-          taskType:
-            targetCol?.type === "categorical"
-              ? MODELS.Classification
-              : isLikelyClassification
-                ? MODELS.Classification
-                : MODELS.Regression,
+          taskType,
           targetColumn: targetCol?.name ?? null,
           fileName: file.name,
         });
