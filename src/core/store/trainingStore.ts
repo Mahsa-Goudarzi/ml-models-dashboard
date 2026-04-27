@@ -26,12 +26,20 @@ interface TrainingState {
   currentEpoch: number;
   results: ModelResults | null;
   tfModel: unknown | null;
+  categoricalMaps: Record<string, string[]>;
+  featureNames: string[];
+  normParams: { mean: number[]; std: number[] } | null;
+  yNormParams: { mean: number; std: number } | null;
 
   setConfig: (config: Partial<ModelConfig>) => void;
   pushMetrics: (m: TrainingMetrics) => void;
   setStatus: (s: TrainingStatus) => void;
   setResults: (r: ModelResults) => void;
   setModel: (m: unknown) => void;
+  setCategoricalMaps: (maps: Record<string, string[]>) => void;
+  setFeatureNames: (names: string[]) => void;
+  setNormParams: (params: { mean: number[]; std: number[] }) => void;
+  setYNormParams: (param: { mean: number; std: number }) => void;
   reset: () => void;
 }
 
@@ -58,6 +66,10 @@ export const useTrainingStore = create<TrainingState>()(
       currentEpoch: 0,
       results: null,
       tfModel: null,
+      categoricalMaps: {},
+      featureNames: [],
+      normParams: null,
+      yNormParams: null,
 
       setConfig: (config) =>
         set((s) => {
@@ -85,6 +97,26 @@ export const useTrainingStore = create<TrainingState>()(
           s.tfModel = model;
         }),
 
+      setCategoricalMaps: (maps) =>
+        set((s) => {
+          s.categoricalMaps = maps;
+        }),
+
+      setFeatureNames: (names) =>
+        set((s) => {
+          s.featureNames = names;
+        }),
+
+      setNormParams: (params) =>
+        set((s) => {
+          s.normParams = params;
+        }),
+
+      setYNormParams: (param) =>
+        set((s) => {
+          s.yNormParams = param;
+        }),
+
       reset: () =>
         set((s) => {
           s.status = TRAINING_STATUS.Idle;
@@ -92,6 +124,10 @@ export const useTrainingStore = create<TrainingState>()(
           s.currentEpoch = 0;
           s.results = null;
           s.tfModel = null;
+          s.categoricalMaps = {};
+          s.featureNames = [];
+          s.normParams = null;
+          s.yNormParams = null;
         }),
     })),
   ),

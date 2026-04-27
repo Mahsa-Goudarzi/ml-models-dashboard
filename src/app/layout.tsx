@@ -1,6 +1,14 @@
+// next metadata
 import type { Metadata } from "next";
+
+// fonts
 import { Inter } from "next/font/google";
+
+// styles
 import "./globals.css";
+
+// tensoflow.js
+import "@tensorflow/tfjs-backend-webgl";
 
 const inter = Inter({ subsets: ["latin"] });
 

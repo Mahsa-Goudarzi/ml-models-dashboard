@@ -1,11 +1,11 @@
-// constants
-import { COLUMNS } from "@/const/const";
-
 // types
 import type { Dataset } from "@/types/types";
 
+// utils
+import { getNumericFeatures } from "@/utils/utils";
+
 export function computeCorrelationMatrix(dataset: Dataset) {
-  const numericCols = dataset.columns.filter((c) => c.type === COLUMNS.Number);
+  const numericCols = getNumericFeatures(dataset);
   const labels = numericCols.map((c) => c.name);
 
   const vectors = labels.map((name) =>

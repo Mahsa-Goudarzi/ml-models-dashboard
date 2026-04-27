@@ -1,0 +1,128 @@
+"use client";
+
+// react
+import { useEffect } from "react";
+
+// next
+import { useRouter } from "next/navigation";
+
+// store
+import { useTrainingStore } from "@/core/store/trainingStore";
+
+// components
+import AppShell from "@/components/ui/AppShell";
+import ConfusionMatrix from "@/components/charts/ConfusionMatrix";
+import FeatureImportance from "@/components/charts/FeatureImportance";
+import RocCurve from "@/components/charts/RocCurve";
+import PredictionPanel from "@/components/ml/PredictionPanel";
+import Panel from "@/components/ui/Panel";
+
+function MetricItem(metric: { label: string; value: string; color?: string }) {
+  return (
+    <div key={metric.label} className="flex items-center gap-1.5 text-[10px]">
+      <span className="text-[var(--text-tertiary)]">{metric.label}</span>
+      <span className="font-medium" style={{ color: metric.color }}>
+        {metric.value}
+      </span>
+    </div>
+  );
+}
+
+export default function ResultsPage() {
+  // app scope states
+  const results = useTrainingStore((s) => s.results);
+
+  // router
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!results) router.replace("/train");
+  }, [results, router]);
+
+  if (!results) return null;
+
+  return (
+    <AppShell>
+      <div className="h-11 border-b border-[var(--border)] flex items-center px-4 gap-2 shrink-0">
+        {/* {["overview", "per class", "errors"].map((tab) => (
+          <button
+            key={tab}
+            className="text-[12px] text-[var(--text-secondary)] px-2.5 py-1 rounded first:bg-[var(--bg-secondary)] first:text-[var(--text-primary)] first:font-medium"
+          >
+            {tab}
+          </button>
+        ))} */}
+        <button className="ml-auto cursor-pointer text-[11px] px-3 py-1 border border-[#7F77DD] text-[#534AB7] rounded-md hover:bg-[#EEEDFE] transition-colors">
+          export model ↓
+        </button>
+      </div>
+
+      <div className="flex-1 grid grid-cols-2 grid-rows-2 gap-px bg-[var(--border)] overflow-hidden">
+        <Panel title="confusion matrix">
+          <ConfusionMatrix
+            matrix={results.confusionMatrix}
+            classNames={results.classNames}
+          />
+        </Panel>
+
+        <Panel title="feature importance">
+          <FeatureImportance data={results.featureImportance} />
+          <div className="text-[10px] text-[var(--text-tertiary)] mt-auto">
+            via gradient × activation
+          </div>
+        </Panel>
+
+        <Panel title="ROC curve">
+          <RocCurve data={results.rocData} classNames={results.classNames} />
+        </Panel>
+
+        <Panel title="live prediction">
+          <PredictionPanel />
+        </Panel>
+      </div>
+
+      <div className="h-7 border-t border-[var(--border)] flex items-center px-4 gap-4 shrink-0">
+        {results.classNames.length === 0 ? (
+          // regression metrics
+          <>
+            <MetricItem
+              label="R²"
+              value={`${results.accuracy}`}
+              color="#1D9E75"
+            />
+            <MetricItem
+              label="MAE"
+              value={`${results.precision}`}
+              color="#534AB7"
+            />
+            <MetricItem
+              label="RMSE"
+              value={`${results.recall}`}
+              color="#378ADD"
+            />
+          </>
+        ) : (
+          // classification metrics
+          <>
+            <MetricItem
+              label="accuracy"
+              value={`${results.accuracy}%`}
+              color="#1D9E75"
+            />
+            <MetricItem
+              label="precision"
+              value={`${results.precision}%`}
+              color="#534AB7"
+            />
+            <MetricItem
+              label="recall"
+              value={`${results.recall}%`}
+              color="#378ADD"
+            />
+            <MetricItem label="f1" value={`${results.f1}%`} color="#D85A30" />
+          </>
+        )}
+      </div>
+    </AppShell>
+  );
+}

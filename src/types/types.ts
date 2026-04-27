@@ -1,3 +1,6 @@
+// tensorflow.js
+import * as tf from "@tensorflow/tfjs";
+
 // types
 import {
   COLUMNS,
@@ -117,4 +120,51 @@ export interface LayerVizType {
   color: string;
   strokeColor: string;
   label: string;
+}
+
+export interface PreprocessedDataType {
+  xTrain: tf.Tensor2D;
+  yTrain: tf.Tensor2D;
+  xVal: tf.Tensor2D;
+  yVal: tf.Tensor2D;
+  featureNames: string[];
+  classNames: string[];
+  normParams: { mean: number[]; std: number[] };
+  categoricalMaps: Record<string, string[]>;
+  yNormParams: { mean: number; std: number };
+}
+
+export type EpochCb = (m: TrainingMetrics) => void;
+export type DoneCb = (
+  r: ModelResults,
+  model: tf.LayersModel,
+  normParams: { mean: number[]; std: number[] },
+  categoricalMaps: Record<string, string[]>,
+  featureNames: string[],
+  yNormParams: { mean: number; std: number },
+) => void;
+
+export interface ConfusionMatrixPropsType {
+  matrix: number[][];
+  classNames: string[];
+}
+
+export interface FeatureImportancePropsType {
+  data: { feature: string; importance: number }[];
+}
+
+export interface RocClass {
+  fpr: number[];
+  tpr: number[];
+  auc: number;
+}
+
+export interface RocCurvePropsType {
+  data: RocClass[];
+  classNames: string[];
+}
+
+export interface CorrelationHeatmapPropsTypes {
+  labels: string[];
+  matrix: number[][];
 }

@@ -189,7 +189,7 @@ export default function DatasetPage() {
                   </span>
                   <button
                     onClick={() => setTargetColumn(col.name)}
-                    className={`px-3 py-1 text-[11px] font-medium rounded-md transition-colors ${
+                    className={`px-3 py-1 text-[11px] font-medium rounded-md transition-colors cursor-pointer ${
                       col.isTarget
                         ? "bg-[#1D9E75] text-white"
                         : "border border-[#1D9E75] text-[#1D9E75] hover:bg-[#E1F5EE]"
@@ -203,7 +203,7 @@ export default function DatasetPage() {
                         isIdentifier: !col.isIdentifier,
                       })
                     }
-                    className={`px-3 py-1 text-[11px] font-medium rounded-md transition-colors ${
+                    className={`px-3 py-1 text-[11px] font-medium rounded-md transition-colors cursor-pointer ${
                       col.isIdentifier
                         ? "bg-[#888780] text-white"
                         : "border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-primary)]"

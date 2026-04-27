@@ -16,29 +16,13 @@ import AppShell from "@/components/ui/AppShell";
 import ScatterPlot from "@/components/charts/ScatterPlot";
 import LossCurve from "@/components/charts/LossCurve";
 import NeuralNetVisualization from "@/components/ml/NeuralNetVisualization";
+import Panel from "@/components/ui/Panel";
 
 // types
 import { Column } from "@/types/types";
 
-// constants
-import { COLUMNS } from "@/const/const";
-
-function Panel({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="bg-[var(--bg-primary)] p-4 flex flex-col gap-2.5 overflow-hidden">
-      <div className="text-[10px] font-medium text-[var(--text-secondary)] uppercase tracking-[0.6px]">
-        {title}
-      </div>
-      {children}
-    </div>
-  );
-}
+// utils
+import { getNumericFeatures, getCategoricalFeatures } from "@/utils/utils";
 
 function StatCard({
   label,
@@ -92,10 +76,10 @@ export default function DashboardPage() {
 
   if (!dataset) return null;
 
-  // scatter plot constants
-  const numericCols = dataset.columns.filter(
-    (c) => c.type === COLUMNS.Number && !c.isTarget && !c.isIdentifier,
-  );
+  // constants
+
+  const numericCols = getNumericFeatures(dataset);
+  const categoricalCols = getCategoricalFeatures(dataset);
   const xCol = numericCols[2]?.name ?? numericCols[0]?.name ?? "";
   const yCol = numericCols[3]?.name ?? numericCols[1]?.name ?? "";
   const scatterData =
@@ -115,7 +99,7 @@ export default function DashboardPage() {
             <StatCard label="rows" value={dataset.rowCount.toLocaleString()} />
             <StatCard
               label="features"
-              value={String(numericCols.length)}
+              value={String(numericCols.length + categoricalCols.length)}
               color="#534AB7"
             />
             <StatCard

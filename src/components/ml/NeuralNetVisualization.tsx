@@ -11,7 +11,10 @@ import { useDatasetStore } from "@/core/store/datasetStore";
 import { LayerVizType } from "@/types/types";
 
 // constants
-import { COLUMNS, TASKS, TRAINING_STATUS } from "@/const/const";
+import { TASKS, TRAINING_STATUS } from "@/const/const";
+
+// utils
+import { getNumberOfAllFeatures } from "@/utils/utils";
 
 export default function NeuralNetVisualization({
   classes = "",
@@ -28,10 +31,9 @@ export default function NeuralNetVisualization({
 
   // network constants
   const layers: LayerVizType[] = useMemo(() => {
-    const inputN =
-      dataset?.columns.filter(
-        (c) => !c.isTarget && !c.isIdentifier && c.type === COLUMNS.Number,
-      ).length ?? 4;
+    if (!dataset) return [];
+
+    const inputN = getNumberOfAllFeatures(dataset);
 
     const isRegression = dataset?.taskType === TASKS.Regression;
 

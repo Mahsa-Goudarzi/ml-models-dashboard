@@ -4,7 +4,7 @@ import Papa from "papaparse";
 import type { Dataset, Column, ColumnType, TaskType } from "@/types/types";
 
 // constants
-import { COLUMNS, TASKS } from "@/const/const";
+import { COLUMNS, TASKS, MAX_CATEGORIES } from "@/const/const";
 
 function detectType(values: unknown[]): ColumnType {
   const sample = values.filter((v) => v != null && v !== "").slice(0, 200);
@@ -132,6 +132,7 @@ export async function parseCSV(file: File): Promise<Dataset> {
           "output",
           "y",
           "result",
+          "median_house_value",
         ];
         let targetIdx = columns.findIndex((c) =>
           targetKeywords.includes(c.name.toLowerCase()),
@@ -148,7 +149,8 @@ export async function parseCSV(file: File): Promise<Dataset> {
 
         const targetCol = columns.find((c) => c.isTarget);
         const isLikelyClassification =
-          targetCol?.type === COLUMNS.Number && targetCol.uniqueCount <= 20;
+          targetCol?.type === COLUMNS.Number &&
+          targetCol.uniqueCount <= MAX_CATEGORIES;
 
         if (isLikelyClassification && targetCol) {
           const idx = columns.findIndex((c) => c.isTarget);

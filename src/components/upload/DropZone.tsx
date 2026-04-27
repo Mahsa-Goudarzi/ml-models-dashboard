@@ -6,8 +6,9 @@ import { useCallback, useState } from "react";
 // next
 import { useRouter } from "next/navigation";
 
-// dataset store
+// store
 import { useDatasetStore } from "@/core/store/datasetStore";
+import { useTrainingStore } from "@/core/store/trainingStore";
 
 // csv parser
 import { parseCSV } from "@/core/data/parser";
@@ -54,8 +55,9 @@ export default function DropZone() {
   const [error, setError] = useState<string | null>(null);
   const [loadingSample, setLoadingSample] = useState<string | null>(null);
 
-  // state management: set dataset
+  // state management
   const setDataset = useDatasetStore((s) => s.setDataset);
+  const resetHistory = useTrainingStore((s) => s.reset);
 
   // router
   const router = useRouter();
@@ -84,6 +86,7 @@ export default function DropZone() {
       try {
         const dataset = await parseCSV(file);
         setDataset(dataset);
+        resetHistory();
         router.push("/dashboard");
       } catch (e: Error | unknown) {
         setError("Failed to parse file. Please make sure it's a valid CSV.");
@@ -91,7 +94,7 @@ export default function DropZone() {
         setLoading(false);
       }
     },
-    [setDataset, router],
+    [setDataset, router, resetHistory],
   );
 
   const onDrop = useCallback(
