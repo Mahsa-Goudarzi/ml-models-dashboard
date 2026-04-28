@@ -16,7 +16,7 @@ import { getNumberOfAllFeatures, getVisibleNeurons } from "@/utils/utils";
 // constants
 import { TASKS, TRAINING_STATUS } from "@/const/const";
 
-const ELLIPSIS_THRESHOLD = 8; // if neurons exceed this, show ellipsis
+const ELLIPSIS_THRESHOLD = 6; // if neurons exceed this, show ellipsis
 
 export default function NeuralNetVisualization({
   classes = "",

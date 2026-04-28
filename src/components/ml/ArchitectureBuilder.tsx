@@ -3,7 +3,7 @@
 import { useTrainingStore } from "@/core/store/trainingStore";
 
 // icons
-import { Plus, Trash2, GripVertical } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 
 // types
 import type { LayerConfig, Activation } from "@/types/types";
@@ -61,7 +61,6 @@ export default function ArchitectureBuilder() {
           className="flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[11px] font-medium"
           style={{ background: "#EEEDFE", border: "0.5px solid #7F77DD" }}
         >
-          <GripVertical size={12} className="text-[#AFA9EC] shrink-0" />
           <span className="text-[#3C3489] shrink-0">dense</span>
           <input
             type="number"
