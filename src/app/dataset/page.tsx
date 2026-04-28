@@ -106,7 +106,7 @@ export default function DatasetPage() {
                   className="h-1 bg-[var(--border)] rounded-full mb-1.5 overflow-hidden"
                   title={
                     col.type === COLUMNS.Number && !col.isIdentifier
-                      ? `mean position: ${col.mean?.toFixed(2)} (between ${col.min?.toFixed(2)} - ${col.max?.toFixed(2)})`
+                      ? `mean position: ${col.mean?.toFixed(2)} (between min. ${col.min?.toFixed(2)} - max. ${col.max?.toFixed(2)})`
                       : undefined
                   }
                 >

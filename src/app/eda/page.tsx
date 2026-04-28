@@ -42,8 +42,8 @@ export default function EDAPage() {
   );
 
   const balance = useMemo(
-    () => (dataset ? computeClassBalance(dataset) : {}),
-    [dataset],
+    () => (dataset && isClassification ? computeClassBalance(dataset) : {}),
+    [dataset, isClassification],
   );
 
   const numericCols = useMemo(
@@ -104,12 +104,14 @@ export default function EDAPage() {
           )}
         </Panel>
 
-        <Panel title="feature distributions + class balance">
+        <Panel
+          title={`feature distributions${isClassification ? " + class balance" : ""}`}
+        >
           <div className="flex flex-col gap-2 flex-1">
             <div className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-[0.5px]">
               mean values
             </div>
-            {numericCols.slice(0, 4).map((col) => (
+            {numericCols.map((col) => (
               <div
                 key={col.name}
                 className="flex items-center gap-2 text-[11px] text-[var(--text-secondary)]"
@@ -123,6 +125,7 @@ export default function EDAPage() {
                       background: "#7F77DD",
                       opacity: 0.8,
                     }}
+                    title={`mean position: ${col.mean?.toFixed(2)} (between min. ${col.min?.toFixed(2)} - max. ${col.max?.toFixed(2)})`}
                   />
                 </div>
                 <span className="w-14 text-[var(--text-tertiary)]">
