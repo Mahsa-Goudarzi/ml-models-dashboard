@@ -6,8 +6,12 @@ import { useEffect } from "react";
 // next
 import { useRouter } from "next/navigation";
 
+//tensorflow.js
+import * as tf from "@tensorflow/tfjs";
+
 // store
 import { useTrainingStore } from "@/core/store/trainingStore";
+import { useDatasetStore } from "@/core/store/datasetStore";
 
 // components
 import AppShell from "@/components/ui/AppShell";
@@ -30,11 +34,41 @@ function MetricItem(metric: { label: string; value: string; color?: string }) {
 
 export default function ResultsPage() {
   // app scope states
+  const dataset = useDatasetStore((s) => s.dataset);
   const results = useTrainingStore((s) => s.results);
+  const tfModel = useTrainingStore((s) => s.tfModel) as tf.LayersModel | null;
+  const { normParams, yNormParams, categoricalMaps, featureNames } =
+    useTrainingStore();
 
   // router
   const router = useRouter();
 
+  // handler functions
+  const handleExport = async () => {
+    if (!tfModel) return;
+
+    await tfModel.save("downloads://mlens-model");
+
+    const metadata = {
+      normParams,
+      yNormParams,
+      categoricalMaps,
+      featureNames,
+      classNames: results?.classNames,
+      taskType: dataset?.taskType,
+    };
+    const blob = new Blob([JSON.stringify(metadata, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "mlens-metadata.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // useEffects
   useEffect(() => {
     if (!results) router.replace("/train");
   }, [results, router]);
@@ -44,15 +78,11 @@ export default function ResultsPage() {
   return (
     <AppShell>
       <div className="h-11 border-b border-[var(--border)] flex items-center px-4 gap-2 shrink-0">
-        {/* {["overview", "per class", "errors"].map((tab) => (
-          <button
-            key={tab}
-            className="text-[12px] text-[var(--text-secondary)] px-2.5 py-1 rounded first:bg-[var(--bg-secondary)] first:text-[var(--text-primary)] first:font-medium"
-          >
-            {tab}
-          </button>
-        ))} */}
-        <button className="ml-auto cursor-pointer text-[11px] px-3 py-1 border border-[#7F77DD] text-[#534AB7] rounded-md hover:bg-[#EEEDFE] transition-colors">
+        <button
+          onClick={handleExport}
+          disabled={!tfModel}
+          className="ml-auto cursor-pointer text-[11px] px-3 py-1 border border-[#7F77DD] text-[#534AB7] rounded-md hover:bg-[#EEEDFE] transition-colors"
+        >
           export model ↓
         </button>
       </div>
