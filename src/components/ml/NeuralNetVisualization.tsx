@@ -204,8 +204,8 @@ export default function NeuralNetVisualization({
             ctx.beginPath();
             ctx.arc(
               layerX[li],
-              ellipsisY + d * radius * 1.2,
-              radius * 0.25,
+              ellipsisY + d * radius,
+              radius * 0.2,
               0,
               Math.PI * 2,
             );

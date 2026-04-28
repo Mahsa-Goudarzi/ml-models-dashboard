@@ -100,7 +100,7 @@ export default function TrainPage() {
 
       <div className="flex-1 flex overflow-hidden">
         {/* Config panel */}
-        <div className="w-52 border-r border-[var(--border)] p-3.5 flex flex-col gap-4 overflow-y-auto shrink-0">
+        <div className="w-56 border-r border-[var(--border)] p-3.5 flex flex-col gap-4 overflow-y-auto shrink-0">
           <div>
             <div className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-[0.6px] mb-2">
               architecture
@@ -176,7 +176,7 @@ export default function TrainPage() {
         {/* Visualization */}
         <div className="flex-1 flex flex-col overflow-hidden">
           <div className="flex-1 flex gap-px bg-[var(--border)] overflow-hidden">
-            <div className="flex-1 bg-[var(--bg-primary)] p-4 flex flex-col gap-2">
+            <div className="basis-3/5 bg-[var(--bg-primary)] p-4 flex flex-col gap-2">
               <div className="text-[10px] font-medium text-[var(--text-secondary)] uppercase tracking-[0.6px]">
                 live network activity
               </div>
@@ -184,7 +184,7 @@ export default function TrainPage() {
                 <NeuralNetVisualization />
               </div>
             </div>
-            <div className="w-56 bg-[var(--bg-primary)] p-4 flex flex-col gap-2 shrink-0">
+            <div className="basis-2/5 min-w-56 bg-[var(--bg-primary)] p-4 flex flex-col gap-2 shrink-0">
               <div className="text-[10px] font-medium text-[var(--text-secondary)] uppercase tracking-[0.6px]">
                 loss curve
               </div>
