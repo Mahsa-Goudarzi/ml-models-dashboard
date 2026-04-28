@@ -168,3 +168,7 @@ export interface CorrelationHeatmapPropsTypes {
   labels: string[];
   matrix: number[][];
 }
+
+export interface PredictedVsActualPropsTypes {
+  predictions: { actual: unknown; predicted: unknown }[];
+}
