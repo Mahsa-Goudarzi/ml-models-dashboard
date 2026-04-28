@@ -23,8 +23,7 @@ export default function NeuralNetVisualization({
 }) {
   // app-wide states
   const dataset = useDatasetStore((s) => s.dataset);
-  const config = useTrainingStore((s) => s.config);
-  const history = useTrainingStore((s) => s.history);
+  const { config, history } = useTrainingStore();
 
   // useRef
   const canvasRef = useRef<HTMLCanvasElement>(null);

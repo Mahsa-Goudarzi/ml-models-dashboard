@@ -49,13 +49,15 @@ export function getScatterData(
   dataset: Dataset,
   xCol: string,
   yCol: string,
-  colorCol?: string,
+  targetCol?: string,
+  isCategoricalTarget?: boolean,
 ) {
   return dataset.rows
     .map((r) => ({
       x: Number(r[xCol]),
       y: Number(r[yCol]),
-      label: colorCol ? String(r[colorCol]) : undefined,
+      label:
+        targetCol && isCategoricalTarget ? String(r[targetCol]) : undefined,
     }))
     .filter((d) => !isNaN(d.x) && !isNaN(d.y));
 }

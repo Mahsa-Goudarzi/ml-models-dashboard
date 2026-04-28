@@ -24,6 +24,9 @@ import { Column } from "@/types/types";
 // utils
 import { getNumericFeatures, getCategoricalFeatures } from "@/utils/utils";
 
+// constants
+import { TASKS } from "@/const/const";
+
 function StatCard({
   label,
   value,
@@ -51,8 +54,8 @@ function StatCard({
 export default function DashboardPage() {
   // app scope states
   const dataset = useDatasetStore((s) => s.dataset);
-  const history = useTrainingStore((s) => s.history);
-  const status = useTrainingStore((s) => s.status);
+  const { history, status } = useTrainingStore();
+  const isClassification = dataset?.taskType === TASKS.Classification;
 
   // router
   const router = useRouter();
@@ -84,7 +87,13 @@ export default function DashboardPage() {
   const yCol = numericCols[3]?.name ?? numericCols[1]?.name ?? "";
   const scatterData =
     xCol && yCol
-      ? getScatterData(dataset, xCol, yCol, dataset.targetColumn ?? undefined)
+      ? getScatterData(
+          dataset,
+          xCol,
+          yCol,
+          dataset.targetColumn ?? undefined,
+          isClassification,
+        )
       : [];
 
   const lastMetrics = history.at(-1);

@@ -24,12 +24,16 @@ import {
 // utils
 import { getNumericFeatures } from "@/utils/utils";
 
+// constants
+import { TASKS } from "@/const/const";
+
 export default function EDAPage() {
   // router
   const router = useRouter();
 
   // app scope states
   const dataset = useDatasetStore((s) => s.dataset);
+  const isClassification = dataset?.taskType === TASKS.Classification;
 
   const { labels, matrix } = useMemo(
     () =>
@@ -58,7 +62,13 @@ export default function EDAPage() {
   const scatterData = useMemo(
     () =>
       xCol && yCol && dataset
-        ? getScatterData(dataset, xCol, yCol, dataset.targetColumn ?? undefined)
+        ? getScatterData(
+            dataset,
+            xCol,
+            yCol,
+            dataset.targetColumn ?? undefined,
+            isClassification,
+          )
         : [],
     [dataset, xCol, yCol],
   );
