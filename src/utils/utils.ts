@@ -32,3 +32,22 @@ export function getNumberOfAllFeatures(dataset: Dataset) {
     getNumericFeatures(dataset).length + getCategoricalFeatures(dataset).length
   );
 }
+
+export const getVisibleNeurons = (total: number, maxVisible = 6) => {
+  if (total <= maxVisible) {
+    return {
+      indices: Array.from({ length: total }, (_, i) => i),
+      hasEllipsis: false,
+      ellipsisAfter: -1,
+    };
+  }
+  const half = Math.floor(maxVisible / 2);
+  return {
+    indices: [
+      ...Array.from({ length: half }, (_, i) => i),
+      ...Array.from({ length: half }, (_, i) => total - half + i),
+    ],
+    hasEllipsis: true,
+    ellipsisAfter: half - 1, // indices that we wanna put dots after
+  };
+};

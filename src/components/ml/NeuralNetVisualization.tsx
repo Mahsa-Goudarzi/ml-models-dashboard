@@ -10,11 +10,13 @@ import { useDatasetStore } from "@/core/store/datasetStore";
 // types
 import { LayerVizType } from "@/types/types";
 
+// utils
+import { getNumberOfAllFeatures, getVisibleNeurons } from "@/utils/utils";
+
 // constants
 import { TASKS, TRAINING_STATUS } from "@/const/const";
 
-// utils
-import { getNumberOfAllFeatures } from "@/utils/utils";
+const ELLIPSIS_THRESHOLD = 8; // if neurons exceed this, show ellipsis
 
 export default function NeuralNetVisualization({
   classes = "",
@@ -48,19 +50,19 @@ export default function NeuralNetVisualization({
 
     return [
       {
-        neurons: Math.min(inputN, 6),
+        neurons: inputN,
         color: "#E6F1FB",
         strokeColor: "#378ADD",
         label: "input",
       },
       ...config.layers.map((l, i) => ({
-        neurons: Math.min(l.units, 8),
+        neurons: l.units,
         color: i === 0 ? "#EEEDFE" : "#EEEDFE",
         strokeColor: i === 0 ? "#7F77DD" : "#534AB7",
         label: `hidden ${i + 1}`,
       })),
       {
-        neurons: Math.min(outputN, 6),
+        neurons: outputN,
         color: "#E1F5EE",
         strokeColor: "#1D9E75",
         label:
@@ -103,20 +105,54 @@ export default function NeuralNetVisualization({
 
       const layerX = layers.map((_, i) => (W / (layers.length + 1)) * (i + 1));
 
-      const neuronY = (layerIdx: number) => {
-        const n = layers[layerIdx].neurons;
-        const spacing = drawH / (n + 1);
-        return Array.from(
-          { length: n },
-          (_, i) => paddingTop + spacing * (i + 1),
-        );
-      };
-
       // connections
       layers.forEach((_, li) => {
         if (li === layers.length - 1) return;
-        neuronY(li).forEach((fy) => {
-          neuronY(li + 1).forEach((ty) => {
+        const { indices: fromIndices } = getVisibleNeurons(
+          layers[li].neurons,
+          ELLIPSIS_THRESHOLD,
+        );
+        const { indices: toIndices } = getVisibleNeurons(
+          layers[li + 1].neurons,
+          ELLIPSIS_THRESHOLD,
+        );
+
+        // calculate y positions considering ellipsis
+        const getSlotY = (
+          layerIdx: number,
+          slotIdx: number,
+          hasEllipsis: boolean,
+        ) => {
+          const visibleCount =
+            getVisibleNeurons(layers[layerIdx].neurons, ELLIPSIS_THRESHOLD)
+              .indices.length + (hasEllipsis ? 1 : 0);
+          const sp = drawH / (visibleCount + 1);
+          return paddingTop + sp * (slotIdx + 1);
+        };
+
+        const fromInfo = getVisibleNeurons(
+          layers[li].neurons,
+          ELLIPSIS_THRESHOLD,
+        );
+        const toInfo = getVisibleNeurons(
+          layers[li + 1].neurons,
+          ELLIPSIS_THRESHOLD,
+        );
+
+        fromIndices.forEach((_, fromSlot) => {
+          const slot =
+            fromInfo.hasEllipsis && fromSlot >= fromInfo.ellipsisAfter + 1
+              ? fromSlot + 1
+              : fromSlot;
+          const fy = getSlotY(li, slot, fromInfo.hasEllipsis);
+
+          toIndices.forEach((_, toSlot) => {
+            const tSlot =
+              toInfo.hasEllipsis && toSlot >= toInfo.ellipsisAfter + 1
+                ? toSlot + 1
+                : toSlot;
+            const ty = getSlotY(li + 1, tSlot, toInfo.hasEllipsis);
+
             ctx.beginPath();
             ctx.moveTo(layerX[li], fy);
             ctx.lineTo(layerX[li + 1], ty);
@@ -129,10 +165,27 @@ export default function NeuralNetVisualization({
 
       // neurons
       layers.forEach((layer, li) => {
-        neuronY(li).forEach((y, ni) => {
+        const { indices, hasEllipsis, ellipsisAfter } = getVisibleNeurons(
+          layer.neurons,
+          ELLIPSIS_THRESHOLD,
+        );
+        const visibleCount = indices.length + (hasEllipsis ? 1 : 0); // one extra slot for ellipsis if needed
+        const spacing = drawH / (visibleCount + 1);
+
+        const getY = (slotIndex: number) =>
+          paddingTop + spacing * (slotIndex + 1);
+
+        indices.forEach((neuronIdx, slotIdx) => {
+          // if ellipsis is present and this neuron is after the ellipsis point, shift it down by one slot
+          const slot =
+            hasEllipsis && slotIdx >= ellipsisAfter + 1 ? slotIdx + 1 : slotIdx;
+          const y = getY(slot);
+
           const pulse = lastMetrics
-            ? Math.sin(Date.now() / 400 + li * 1.2 + ni * 0.8) * 0.15 + 0.85
+            ? Math.sin(Date.now() / 400 + li * 1.2 + neuronIdx * 0.8) * 0.15 +
+              0.85
             : 1;
+
           ctx.beginPath();
           ctx.arc(layerX[li], y, radius, 0, Math.PI * 2);
           ctx.fillStyle = layer.color;
@@ -142,10 +195,36 @@ export default function NeuralNetVisualization({
           ctx.stroke();
         });
 
+        // draw ellipsis
+        if (hasEllipsis) {
+          const ellipsisY = getY(ellipsisAfter + 1);
+          ctx.fillStyle = layer.strokeColor;
+          ctx.globalAlpha = 0.5;
+          for (let d = -1; d <= 1; d++) {
+            ctx.beginPath();
+            ctx.arc(
+              layerX[li],
+              ellipsisY + d * radius * 1.2,
+              radius * 0.25,
+              0,
+              Math.PI * 2,
+            );
+            ctx.fill();
+          }
+          ctx.globalAlpha = 1;
+        }
+
+        // label
         ctx.fillStyle = "rgba(136,135,128,0.8)";
         ctx.font = `${Math.max(9, radius * 0.85)}px sans-serif`;
         ctx.textAlign = "center";
-        ctx.fillText(layer.label, layerX[li], H - 4);
+        ctx.fillText(
+          layer.neurons > ELLIPSIS_THRESHOLD
+            ? `${layer.label} (${layer.neurons})`
+            : layer.label,
+          layerX[li],
+          H - 4,
+        );
       });
     };
 
