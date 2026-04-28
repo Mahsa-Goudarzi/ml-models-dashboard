@@ -25,7 +25,7 @@ import { cn } from "@/utils/utils";
 const SAMPLE_DATASETS = [
   {
     name: "Iris",
-    meta: "150 rows · 5 cols",
+    meta: "150 rows · 6 cols",
     tag: "classification",
     file: "Iris",
     tagClass: "text-[var(--purple-primary)] bg-[var(--purple-secondary)]",
@@ -39,7 +39,7 @@ const SAMPLE_DATASETS = [
   },
   {
     name: "House Prices",
-    meta: "1460 rows · 79 cols",
+    meta: "506 rows · 14 cols",
     tag: "regression",
     file: "Housing",
     tagClass: "text-[var(--blue-primary)] bg-[var(--blue-secondary)]",

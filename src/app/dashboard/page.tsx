@@ -161,11 +161,12 @@ export default function DashboardPage() {
         <Panel title="neural network">
           <NeuralNetVisualization classes="max-h-[260]" />
           <div className="text-[10px] text-[var(--text-tertiary)] text-center">
+            relu ·{" "}
             {useTrainingStore
               .getState()
               .config.layers.map((l) => l.units)
               .join(" → ")}{" "}
-            · relu · softmax
+            · softmax
           </div>
         </Panel>
 
