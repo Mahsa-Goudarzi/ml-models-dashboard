@@ -70,7 +70,7 @@ export default function EDAPage() {
             isClassification,
           )
         : [],
-    [dataset, xCol, yCol],
+    [dataset, xCol, yCol, isClassification],
   );
 
   const max = useMemo(() => Math.max(...Object.values(balance), 1), [balance]);

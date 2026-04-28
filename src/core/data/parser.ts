@@ -132,7 +132,6 @@ export async function parseCSV(file: File): Promise<Dataset> {
           "output",
           "y",
           "result",
-          "median_house_value",
         ];
         let targetIdx = columns.findIndex((c) =>
           targetKeywords.includes(c.name.toLowerCase()),

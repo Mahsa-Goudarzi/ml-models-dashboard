@@ -10,6 +10,8 @@ import type { LayerConfig, Activation } from "@/types/types";
 
 // constants
 import { ACTIVATIONS, TASKS } from "@/const/const";
+
+// store
 import { useDatasetStore } from "@/core/store/datasetStore";
 
 export default function ArchitectureBuilder() {
