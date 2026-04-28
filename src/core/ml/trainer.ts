@@ -86,6 +86,7 @@ export async function trainModel(
       classNames,
       featureNames,
       isRegression,
+      yNormParams,
     );
     onDone(
       results,
@@ -107,6 +108,7 @@ async function computeResults(
   classNames: string[],
   featureNames: string[],
   isRegression: boolean,
+  yNormParams: { mean: number; std: number } | null,
 ): Promise<ModelResults> {
   const predTensor = model.predict(xVal) as tf.Tensor2D;
   const predArr = await predTensor.array();
@@ -130,6 +132,13 @@ async function computeResults(
     const ssRes = preds.reduce((s, p, i) => s + (p - actuals[i]) ** 2, 0);
     const r2 = 1 - ssRes / ssTot;
 
+    // denormalize predictions and actuals
+    const denorm = (v: number) =>
+      yNormParams ? v * yNormParams.std + yNormParams.mean : v;
+
+    const predsDenorm = preds.map(denorm);
+    const actualsDenorm = actuals.map(denorm);
+
     return {
       confusionMatrix: [],
       classNames: [],
@@ -139,9 +148,9 @@ async function computeResults(
       f1: 0,
       featureImportance,
       rocData: [],
-      predictions: actuals.map((a, i) => ({
+      predictions: actualsDenorm.map((a, i) => ({
         actual: a,
-        predicted: preds[i],
+        predicted: predsDenorm[i],
         confidence:
           1 -
           Math.abs(preds[i] - a) /
