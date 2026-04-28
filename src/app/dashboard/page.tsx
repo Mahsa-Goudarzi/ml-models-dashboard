@@ -54,7 +54,7 @@ function StatCard({
 export default function DashboardPage() {
   // app scope states
   const dataset = useDatasetStore((s) => s.dataset);
-  const { history, status } = useTrainingStore();
+  const { history, status, results } = useTrainingStore();
   const isClassification = dataset?.taskType === TASKS.Classification;
 
   // router
@@ -112,11 +112,15 @@ export default function DashboardPage() {
               color="#534AB7"
             />
             <StatCard
-              label="accuracy"
+              label={isClassification ? "accuracy" : "R²"}
               value={
-                lastMetrics?.accuracy
-                  ? `${lastMetrics.accuracy.toFixed(1)}%`
-                  : "-"
+                isClassification
+                  ? lastMetrics?.accuracy
+                    ? `${lastMetrics.accuracy.toFixed(1)}%`
+                    : "-"
+                  : results?.accuracy
+                    ? `${results.accuracy.toFixed(2)}`
+                    : "-"
               }
               color="#1D9E75"
             />

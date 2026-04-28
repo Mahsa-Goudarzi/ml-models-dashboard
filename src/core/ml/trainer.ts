@@ -133,7 +133,7 @@ async function computeResults(
     return {
       confusionMatrix: [],
       classNames: [],
-      accuracy: parseFloat((r2 * 100).toFixed(2)), // R2 as accuracy
+      accuracy: parseFloat(r2.toFixed(2)), // R2 as accuracy
       precision: parseFloat(mae.toFixed(2)), // MAE
       recall: parseFloat(Math.sqrt(mse).toFixed(2)), // RMSE
       f1: 0,

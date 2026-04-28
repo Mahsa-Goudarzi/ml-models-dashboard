@@ -83,16 +83,6 @@ export default function EDAPage() {
 
   return (
     <AppShell>
-      <div className="h-11 border-b border-[var(--border)] flex items-center px-4 gap-2 shrink-0">
-        {["correlation", "distributions", "scatter", "outliers"].map((tab) => (
-          <button
-            key={tab}
-            className="text-[12px] text-[var(--text-secondary)] px-2.5 py-1 rounded first:bg-[var(--bg-secondary)] first:text-[var(--text-primary)] first:font-medium"
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
       <div className="flex-1 grid grid-cols-2 grid-rows-2 gap-px bg-[var(--border)] overflow-hidden">
         <Panel title="correlation heatmap">
           {labels.length > 1 ? (

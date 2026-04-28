@@ -25,7 +25,7 @@ export default function LossCurve({ history }: LossCurvePropsType) {
     );
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width="100%" height="100%" minWidth={0}>
       <LineChart
         data={history}
         margin={{ top: 8, right: 8, left: -20, bottom: 0 }}

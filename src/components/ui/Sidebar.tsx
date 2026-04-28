@@ -18,9 +18,6 @@ import {
   BarChart3,
   BrainCircuit,
   TrendingUp,
-  Network,
-  GitBranch,
-  Activity,
   Upload,
 } from "lucide-react";
 
@@ -44,24 +41,6 @@ const navItems = [
     icon: TrendingUp,
     section: "workspace",
   },
-  {
-    label: "Neural net",
-    href: "/train?model=neural_net",
-    icon: Network,
-    section: "models",
-  },
-  {
-    label: "Linear / Logistic",
-    href: "/train?model=linear",
-    icon: Activity,
-    section: "models",
-  },
-  {
-    label: "Decision tree",
-    href: "/train?model=tree",
-    icon: GitBranch,
-    section: "models",
-  },
 ];
 
 export default function Sidebar() {
@@ -76,7 +55,6 @@ export default function Sidebar() {
 
   // constants
   const workspaceItems = navItems.filter((i) => i.section === "workspace");
-  const modelItems = navItems.filter((i) => i.section === "models");
 
   return (
     <aside className="w-[180px] bg-[var(--sidebar-bg)] border-r border-[var(--border)] flex flex-col shrink-0 h-full">
@@ -123,26 +101,6 @@ export default function Sidebar() {
                   CSV
                 </span>
               )}
-            </Link>
-          );
-        })}
-
-        <div className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-[0.8px] px-2 pb-1.5 pt-3">
-          models
-        </div>
-        {modelItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.href}
-              href={dataset ? item.href : "/"}
-              className={cn(
-                "flex items-center gap-2 px-2 py-1.5 rounded-md text-[12px] mb-0.5 transition-colors text-[var(--text-secondary)] hover:bg-[var(--bg-primary)] hover:text-[var(--text-primary)]",
-                !dataset && "opacity-40 cursor-not-allowed",
-              )}
-            >
-              <Icon size={13} />
-              {item.label}
             </Link>
           );
         })}
