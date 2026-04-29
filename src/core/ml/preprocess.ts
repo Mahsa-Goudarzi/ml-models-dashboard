@@ -80,7 +80,7 @@ export function preprocess(
     Y_final = Y_raw.map((v) => (v - yMean) / yStd);
   }
 
-  // z-score only onnumeric featuree, not on one-hot encoded categorical features
+  // z-score only on numeric featuree, not on one-hot encoded categorical features
   const numericCount = numericFeatures.length;
   const mean = featureNames.map((_, fi) => {
     if (fi >= numericCount) return 0;

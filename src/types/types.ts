@@ -1,7 +1,7 @@
 // tensorflow.js
 import * as tf from "@tensorflow/tfjs";
 
-// types
+// constants
 import {
   COLUMNS,
   TASKS,
