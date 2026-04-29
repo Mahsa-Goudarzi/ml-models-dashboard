@@ -15,11 +15,6 @@ An interactive, frontend-heavy web application for exploring datasets, configuri
 
 ---
 
-## 🚀 Demo
-
-![MLens Demo](./demo.gif)
-
----
 
 ## 💡 Motivation
 
