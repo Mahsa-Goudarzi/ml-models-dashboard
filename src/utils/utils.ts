@@ -1,6 +1,10 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+
+// constants
 import { COLUMNS, MAX_CATEGORIES } from "@/const/const";
+
+// types
 import { Dataset } from "@/types/types";
 
 export function cn(...inputs: ClassValue[]) {

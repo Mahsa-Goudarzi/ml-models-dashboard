@@ -179,7 +179,7 @@ export default function DashboardPage() {
               .getState()
               .config.layers.map((l) => l.units)
               .join(" → ")}{" "}
-            · softmax
+            · {isClassification ? "softmax" : "linear"}
           </div>
         </Panel>
 
