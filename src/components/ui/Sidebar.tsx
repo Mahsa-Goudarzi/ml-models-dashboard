@@ -107,15 +107,15 @@ export default function Sidebar() {
       </nav>
 
       {/* Social media links */}
-      <div className="px-3 py-2 border-t border-[var(--border)] flex items-center gap-2">
+      <div className="px-3 py-2 border-t border-[var(--border)] flex items-center">
         <div className="mr-auto text-[9px] text-[var(--text-tertiary)]">
-          Built with ❤
+          Built by Mahsa Goudarzi
         </div>
         <a
           href="https://www.linkedin.com/in/mahsagoudarzi/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center w-7 h-7 rounded-md text-[var(--text-tertiary)] hover:text-[#534AB7] hover:bg-[#EEEDFE] transition-colors"
+          className="flex items-center justify-center w-5 h-5 rounded-md text-[var(--text-tertiary)] hover:text-[#534AB7] hover:bg-[#EEEDFE] transition-colors"
           title="LinkedIn"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -127,7 +127,7 @@ export default function Sidebar() {
           href="https://github.com/Mahsa-Goudarzi/ml-models-dashboard"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center w-7 h-7 rounded-md text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-primary)] transition-colors"
+          className="flex items-center justify-center w-5 h-5 rounded-md text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-primary)] transition-colors"
           title="GitHub"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
