@@ -15,11 +15,6 @@ An interactive, frontend-heavy web application for exploring datasets, configuri
 
 ---
 
-## 🚀 Demo
-
-![MLens Demo](./demo.gif)
-
----
 
 ## 💡 Motivation
 
@@ -92,10 +87,10 @@ This project focuses heavily on frontend engineering challenges:
 
 The app is structured into modular layers:
 
-- Data Layer → parsing, statistics, preprocessing
-- State Layer → Zustand stores
-- ML Layer → TensorFlow.js (model building & training)
-- UI Layer → dashboards, charts, interactive components
+- Data Layer: parsing, statistics, preprocessing
+- State Layer: Zustand stores
+- ML Layer: TensorFlow.js (model building & training)
+- UI Layer: dashboards, charts, interactive components
 
 ---
 
@@ -129,4 +124,4 @@ GitHub: https://github.com/mahsa-goudarzi
 ---
 
 ## ⭐️ If you like this project...
-Give it a star. Or even better, try it out and break it 😄
+Give it a star, or even better, try it out and break it 😄
