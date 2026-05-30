@@ -18,7 +18,7 @@ An interactive, frontend-heavy web application for exploring datasets, configuri
 
 ## 💡 Motivation
 
-This project was built to bridge my professional experience in frontend engineering with my academic background in machine learning.
+The project started as an opportunity to challenge myself with a larger-scale frontend architecture and explore how complex technical workflows can be transformed into intuitive user experiences. My goal was not only to make machine learning accessible through the browser, but also to create an interface that felt responsive, interactive, and enjoyable to use.
 
 Instead of building a traditional ML backend, the goal was to design a **complex, data-intensive user interface** that simulates real-world ML workflows and is entirely client-side.
 
