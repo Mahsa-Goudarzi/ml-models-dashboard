@@ -13,6 +13,7 @@ An interactive, frontend-heavy web application for exploring datasets, configuri
 
 🔗 **Live Demo:** https://mlens-dashboard.vercel.app
 
+https://github.com/user-attachments/assets/c5bbbe3c-0085-4aec-8834-91506591504a
 ---
 
 
