@@ -15,7 +15,8 @@ An interactive, frontend-heavy web application for exploring datasets, configuri
 
 📽 **Demo Video:**
 
-https://github.com/user-attachments/assets/c5bbbe3c-0085-4aec-8834-91506591504a
+https://github.com/user-attachments/assets/217d4701-797f-4e06-959f-7bc465dfef26
+
 ---
 
 
